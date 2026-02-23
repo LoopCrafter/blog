@@ -1,6 +1,6 @@
-import { ThemeProvider } from "@/components/shared/theme-provider";
+import { ThemeProvider } from "@/src/components/shared/theme-provider";
 import "./globals.css";
-import { Navbar } from "@/components/shared/navbar";
+import { Navbar } from "@/src/components/shared/navbar";
 
 export default function RootLayout({
   children,
@@ -16,7 +16,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
+          {/* <Navbar /> */}
           <main className="px-4">{children}</main>
         </ThemeProvider>
       </body>
