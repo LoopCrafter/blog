@@ -8,3 +8,5 @@ export const signupSchema = z.object({
   email: z.email("Invalid email address"),
   password: z.string().min(8).max(30),
 });
+
+export type signupSchemaType = z.infer<typeof signupSchema>;

@@ -17,9 +17,10 @@ import {
 } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import { signupSchema } from "@/src/schemas/auth";
+import { signupSchema, signupSchemaType } from "@/src/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { authClient } from "@/lib/auth-client";
 
 const page = () => {
   const form = useForm({
@@ -31,9 +32,13 @@ const page = () => {
     },
   });
 
-  const handleSubmit = () => {
-    console.log("YOHO");
-  };
+  async function handleSubmit(data: signupSchemaType) {
+    await authClient.signUp.email({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+    });
+  }
   return (
     <Card className="w-full">
       <CardHeader>
