@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/src/components/shared/theme-provider";
 import "./globals.css";
 import { Navbar } from "@/src/components/shared/navbar";
+import { ConvexClientProvider } from "../provider/ConvexClientProvider";
 
 export default function RootLayout({
   children,
@@ -17,7 +18,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {/* <Navbar /> */}
-          <main className="px-4">{children}</main>
+          <ConvexClientProvider>
+            <main className="px-4">{children}</main>
+          </ConvexClientProvider>
         </ThemeProvider>
       </body>
     </html>
