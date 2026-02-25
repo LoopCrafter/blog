@@ -12,7 +12,7 @@ export function Navbar() {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const router = useRouter();
   return (
-    <nav className="flex w-full items-center justify-between p-4">
+    <nav className="flex w-full items-center justify-between py-4">
       <div className="flex items-center justify-center gap-3">
         <Link href="/">
           <h1 className="font-bold text-3xl flex items-center gap-1">
@@ -25,10 +25,10 @@ export function Navbar() {
             Home
           </li>
           <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
-            About
+            Blog
           </li>
           <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
-            Contact
+            <Link href="/create">Create</Link>
           </li>
         </ul>
       </div>

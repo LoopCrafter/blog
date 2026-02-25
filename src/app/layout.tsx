@@ -2,7 +2,7 @@ import { ThemeProvider } from "@/src/provider/theme-provider";
 import "./globals.css";
 import { ConvexClientProvider } from "../provider/ConvexClientProvider";
 import { getToken } from "@/lib/auth-server";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/src/components/ui/sonner";
 
 export default async function RootLayout({
   children,
@@ -19,7 +19,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="px-4">
+          <main className="px-8">
             <ConvexClientProvider initialToken={token}>
               {children}
             </ConvexClientProvider>
