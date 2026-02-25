@@ -8,21 +8,24 @@ import {
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
 import { signupSchema, signupSchemaType } from "@/src/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 
-const page = () => {
+const SignupPage = () => {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const form = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -33,10 +36,21 @@ const page = () => {
   });
 
   async function handleSubmit(data: signupSchemaType) {
-    await authClient.signUp.email({
-      email: data.email,
-      password: data.password,
-      name: data.name,
+    startTransition(async () => {
+      await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Account created successfully!");
+            router.push("/");
+          },
+          onError: (error) => {
+            toast.error(`Signup failed: ${error.error.message}`);
+          },
+        },
+      });
     });
   }
   return (
@@ -46,9 +60,6 @@ const page = () => {
         <CardDescription>
           create an account to get started with our awesome app!
         </CardDescription>
-        <CardAction>
-          <Button variant="link">Sign Up</Button>
-        </CardAction>
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -112,7 +123,16 @@ const page = () => {
                 );
               }}
             />
-            <Button>Sign up</Button>
+            <Button disabled={isPending}>
+              {isPending ? (
+                <>
+                  <Loader2 className="animate-spin size-4" />
+                  <span className="">Loading ...</span>
+                </>
+              ) : (
+                <span>Signup</span>
+              )}
+            </Button>
           </FieldGroup>
         </form>
       </CardContent>
@@ -120,4 +140,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SignupPage;

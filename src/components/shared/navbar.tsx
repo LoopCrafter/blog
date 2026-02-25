@@ -1,9 +1,16 @@
+"use client";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { buttonVariants } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { useConvexAuth } from "convex/react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
+  const { isAuthenticated, isLoading } = useConvexAuth();
+  const router = useRouter();
   return (
     <nav className="flex w-full items-center justify-between p-4">
       <div className="flex items-center justify-center gap-3">
@@ -27,15 +34,37 @@ export function Navbar() {
       </div>
       <div className="flex items-center gap-2">
         <ThemeToggle />
-        <Link
-          href="/auth/login"
-          className={`${cn(buttonVariants({ variant: "outline" }))}`}
-        >
-          Login
-        </Link>
-        <Link href="/auth/signup" className={`${cn(buttonVariants())}`}>
-          Sign Up
-        </Link>
+        {isLoading ? null : isAuthenticated ? (
+          <Button
+            onClick={async () =>
+              await authClient.signOut({
+                fetchOptions: {
+                  onSuccess: () => {
+                    toast.success("Logged out successfully");
+                    router.push("/");
+                  },
+                  onError: (error) => {
+                    toast.error(`Logout failed: ${error.error.message}`);
+                  },
+                },
+              })
+            }
+          >
+            Logout
+          </Button>
+        ) : (
+          <>
+            <Link
+              href="/auth/login"
+              className={`${cn(buttonVariants({ variant: "outline" }))}`}
+            >
+              Login
+            </Link>
+            <Link href="/auth/signup" className={`${cn(buttonVariants())}`}>
+              Sign Up
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );

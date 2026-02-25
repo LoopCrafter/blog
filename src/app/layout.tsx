@@ -1,7 +1,8 @@
-import { ThemeProvider } from "@/src/components/shared/theme-provider";
+import { ThemeProvider } from "@/src/provider/theme-provider";
 import "./globals.css";
 import { ConvexClientProvider } from "../provider/ConvexClientProvider";
 import { getToken } from "@/lib/auth-server";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function RootLayout({
   children,
@@ -18,10 +19,12 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* <Navbar /> */}
-          <ConvexClientProvider initialToken={token}>
-            <main className="px-4">{children}</main>
-          </ConvexClientProvider>
+          <main className="px-4">
+            <ConvexClientProvider initialToken={token}>
+              {children}
+            </ConvexClientProvider>
+          </main>
+          <Toaster closeButton />
         </ThemeProvider>
       </body>
     </html>
