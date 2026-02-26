@@ -1,4 +1,5 @@
 "use client";
+import { api } from "@/convex/_generated/api";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -15,12 +16,20 @@ import {
 } from "@/src/components/ui/field";
 import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
-import { blogSchema } from "@/src/schemas/blog";
+import { Blog, blogSchema } from "@/src/schemas/blog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Text } from "lucide-react";
+import { useMutation } from "convex/react";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { start } from "repl";
+import { toast } from "sonner";
 
 const CreatePostPage = () => {
+  const [isPending, startTransition] = useTransition();
+  const createPost = useMutation(api.posts.createPost);
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(blogSchema),
     defaultValues: {
@@ -28,6 +37,15 @@ const CreatePostPage = () => {
       content: "",
     },
   });
+
+  const onSubmit = (data: Blog) => {
+    startTransition(() => {
+      createPost(data);
+
+      toast.success("Post created successfully!");
+      router.push("/posts");
+    });
+  };
   return (
     <div className="py-12">
       <div className="text-center mb-12">
@@ -44,48 +62,59 @@ const CreatePostPage = () => {
           <CardDescription>Create a new blog article.</CardDescription>
         </CardHeader>
         <CardContent>
-          <FieldGroup className="gap-y-4">
-            <Controller
-              control={form.control}
-              name="title"
-              render={({ field, fieldState }) => {
-                return (
-                  <Field>
-                    <FieldLabel>Title</FieldLabel>
-                    <Input
-                      placeholder="My First Blog Post"
-                      aria-invalid={fieldState.invalid}
-                      type="text"
-                      {...field}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                );
-              }}
-            />
-            <Controller
-              control={form.control}
-              name="content"
-              render={({ field, fieldState }) => {
-                return (
-                  <Field>
-                    <FieldLabel>Content</FieldLabel>
-                    <Textarea
-                      placeholder="Write your blog content here..."
-                      aria-invalid={fieldState.invalid}
-                      {...field}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                );
-              }}
-            />
-            <Button className="mt-6"> Create Post </Button>
-          </FieldGroup>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FieldGroup className="gap-y-4">
+              <Controller
+                control={form.control}
+                name="title"
+                render={({ field, fieldState }) => {
+                  return (
+                    <Field>
+                      <FieldLabel>Title</FieldLabel>
+                      <Input
+                        placeholder="My First Blog Post"
+                        aria-invalid={fieldState.invalid}
+                        type="text"
+                        {...field}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+              <Controller
+                control={form.control}
+                name="content"
+                render={({ field, fieldState }) => {
+                  return (
+                    <Field>
+                      <FieldLabel>Content</FieldLabel>
+                      <Textarea
+                        placeholder="Write your blog content here..."
+                        aria-invalid={fieldState.invalid}
+                        {...field}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+              <Button className="mt-6" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="animate-spin size-4" />
+                    <span className="ml-2">Creating...</span>
+                  </>
+                ) : (
+                  <span>Create Post</span>
+                )}
+              </Button>
+            </FieldGroup>
+          </form>
         </CardContent>
       </Card>
     </div>
