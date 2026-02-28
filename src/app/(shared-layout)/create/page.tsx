@@ -12,7 +12,9 @@ import { Field, FieldGroup, FieldLabel } from "@/src/components/ui/field";
 import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 import { Loader2 } from "lucide-react";
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
 type InitialState = {
   errors: Record<string, string>;
@@ -26,10 +28,23 @@ const initialState: InitialState = {
   data: {},
 };
 const CreatePostPage = () => {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     createBlogAction,
     initialState,
   );
+
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      toast.success("Post created!");
+      router.push("/");
+      return;
+    }
+
+    if (state.errors?.general) toast.error(state.errors.general);
+  }, [state, router]);
 
   return (
     <div className="py-12">
