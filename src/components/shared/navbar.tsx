@@ -22,10 +22,10 @@ export function Navbar() {
         </Link>
         <ul className="flex items-center justify-center">
           <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
-            Home
+            <Link href="/">Home</Link>
           </li>
           <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
-            Blog
+            <Link href="/blog">Blog</Link>
           </li>
           <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
             <Link href="/create">Create</Link>

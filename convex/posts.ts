@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { authComponent } from "./betterAuth/auth";
 
 export const createPost = mutation({
@@ -20,5 +20,23 @@ export const createPost = mutation({
     });
 
     return blogArticle;
+  },
+});
+
+export const getPosts = query({
+  args: {
+    cursor: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const PAGE_SIZE = 5;
+    const posts = await ctx.db
+      .query("posts")
+      .order("desc")
+      .paginate({
+        cursor: args.cursor ?? null,
+        numItems: PAGE_SIZE,
+      });
+
+    return posts;
   },
 });
