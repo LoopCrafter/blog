@@ -4,26 +4,21 @@ import { blogSchema } from "../schemas/blog";
 import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
 import { getToken } from "@/lib/auth-server";
+import { zodToFieldErrors } from "../helper";
 
 export const createBlogAction = async (_: any, formData: FormData) => {
+  const titleRaw = formData.get("title");
+  const contentRaw = formData.get("content");
+
   const blogData = {
-    title: (formData.get("title") as string) ?? "",
-    content: (formData.get("content") as string) ?? "",
+    title: typeof titleRaw === "string" ? titleRaw : "",
+    content: typeof contentRaw === "string" ? contentRaw : "",
   };
-  const results = blogSchema.safeParse(blogData);
-  if (!results.success) {
-    const errors: Record<string, string> = {};
-
-    results.error.issues.forEach((issue) => {
-      const field = issue.path.join(".");
-
-      if (!errors[field]) {
-        errors[field] = issue.message;
-      }
-    });
+  const result = blogSchema.safeParse(blogData);
+  if (!result.success) {
     return {
       success: false,
-      errors,
+      errors: zodToFieldErrors(result.error),
       data: blogData,
     };
   }
