@@ -5,6 +5,6 @@ export default defineSchema({
   posts: defineTable({
     title: v.string(),
     content: v.string(),
-    authourId: v.string(),
+    authorId: v.string(),
   }),
 });

@@ -17,7 +17,7 @@ export function Navbar() {
         <Link href="/">
           <h1 className="font-bold text-3xl flex items-center gap-1">
             My
-            <span className="text-blue-500">Blog</span>
+            <span className="text-primary">Blog</span>
           </h1>
         </Link>
         <ul className="flex items-center justify-center">

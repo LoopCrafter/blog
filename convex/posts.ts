@@ -16,7 +16,7 @@ export const createPost = mutation({
     const blogArticle = await ctx.db.insert("posts", {
       title: args.title,
       content: args.content,
-      authourId: user._id,
+      authorId: user._id,
     });
 
     return blogArticle;
@@ -29,7 +29,7 @@ export const getPosts = query({
   },
   handler: async (ctx, args) => {
     const PAGE_SIZE = 5;
-    const posts = await ctx.db
+    const result = await ctx.db
       .query("posts")
       .order("desc")
       .paginate({
@@ -37,6 +37,18 @@ export const getPosts = query({
         numItems: PAGE_SIZE,
       });
 
-    return posts;
+    const items = result.page.map((p) => ({
+      id: p._id,
+      createdAt: p._creationTime,
+      authorId: p.authorId,
+      excerpt: p.content?.slice(0, 140) ?? "",
+      content: p.content,
+      title: p.title,
+    }));
+
+    return {
+      items,
+      nextCursor: result.continueCursor,
+    };
   },
 });
