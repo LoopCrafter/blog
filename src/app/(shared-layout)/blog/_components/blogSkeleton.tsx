@@ -3,7 +3,7 @@ import { Skeleton } from "@/src/components/ui/skeleton";
 const BlogSkeleton = () => {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
-      {[...Array(2)].map((_, i) => {
+      {[...Array(6)].map((_, i) => {
         return (
           <div className="p-6" key={i}>
             <Skeleton className="h-48 w-full rounded-t-lg" />

@@ -107,6 +107,8 @@ const CreatePostPage = () => {
                   type="file"
                   name="image"
                   accept="image/*"
+                  value={selectedImage ? undefined : ""}
+                  className={`${state.errors.image ? "border-red-500" : ""}`}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (file && file.size > 1024 * 1024) {

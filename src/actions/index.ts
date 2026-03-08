@@ -9,8 +9,7 @@ import { zodToFieldErrors } from "../helper";
 export const createBlogAction = async (_: any, formData: FormData) => {
   const titleRaw = formData.get("title");
   const contentRaw = formData.get("content");
-  const image = formData.get("image") as File | null;
-  console.log("Received form data:", { titleRaw, contentRaw, image });
+  const image = formData.get("image") as File;
   const blogData = {
     title: typeof titleRaw === "string" ? titleRaw : "",
     content: typeof contentRaw === "string" ? contentRaw : "",
@@ -20,18 +19,6 @@ export const createBlogAction = async (_: any, formData: FormData) => {
   const errors: Record<string, string> = {};
   if (!result.success) {
     Object.assign(errors, zodToFieldErrors(result.error));
-  }
-
-  if (!image || image.size === 0) {
-    errors.image = "Image is required";
-  } else {
-    if (!image.type.startsWith("image/")) {
-      errors.image = "Selected file must be an image";
-    }
-
-    if (image.size > 1024 * 1024) {
-      errors.image = "Image size must be less than 1MB";
-    }
   }
 
   if (Object.keys(errors).length > 0) {
@@ -44,11 +31,31 @@ export const createBlogAction = async (_: any, formData: FormData) => {
 
   const token = await getToken();
   try {
+    const imageUrl = await fetchMutation(
+      api.posts.generateImageUploadUrl,
+      {},
+      { token },
+    );
+    const uploadResult = await fetch(imageUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": image.type,
+      },
+      body: image,
+    });
+    if (!uploadResult.ok) {
+      console.error("Image upload failed", await uploadResult.text());
+      throw new Error("Failed to upload image");
+    }
+
+    const { storageId } = await uploadResult.json();
+
     await fetchMutation(
       api.posts.createPost,
       {
         title: blogData.title,
         content: blogData.content,
+        imageStorageId: storageId,
       },
       { token },
     );
@@ -64,11 +71,14 @@ export const createBlogAction = async (_: any, formData: FormData) => {
       redirect("/auth/login");
     }
 
-    console.log("Error creating blog post:", error);
+    let errorMessage = "An error occurred while creating the post.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     return {
       success: false,
       errors: {
-        general: "An error occurred while creating the post.",
+        general: errorMessage || "An error occurred while creating the post.",
       },
       data: blogData,
     };
