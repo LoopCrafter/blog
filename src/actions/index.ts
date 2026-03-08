@@ -9,16 +9,35 @@ import { zodToFieldErrors } from "../helper";
 export const createBlogAction = async (_: any, formData: FormData) => {
   const titleRaw = formData.get("title");
   const contentRaw = formData.get("content");
-
+  const image = formData.get("image") as File | null;
+  console.log("Received form data:", { titleRaw, contentRaw, image });
   const blogData = {
     title: typeof titleRaw === "string" ? titleRaw : "",
     content: typeof contentRaw === "string" ? contentRaw : "",
+    image,
   };
   const result = blogSchema.safeParse(blogData);
+  const errors: Record<string, string> = {};
   if (!result.success) {
+    Object.assign(errors, zodToFieldErrors(result.error));
+  }
+
+  if (!image || image.size === 0) {
+    errors.image = "Image is required";
+  } else {
+    if (!image.type.startsWith("image/")) {
+      errors.image = "Selected file must be an image";
+    }
+
+    if (image.size > 1024 * 1024) {
+      errors.image = "Image size must be less than 1MB";
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
     return {
       success: false,
-      errors: zodToFieldErrors(result.error),
+      errors,
       data: blogData,
     };
   }
