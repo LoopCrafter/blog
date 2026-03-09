@@ -5,11 +5,7 @@ import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
-const fakeApi = () => {
-  return new Promise((resolve) => setTimeout(resolve, 3000));
-};
 const BlogList = async () => {
-  await fakeApi();
   const results = await fetchQuery(api.posts.getPosts, {});
 
   if (!results) return null;
