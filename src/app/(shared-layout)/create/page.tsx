@@ -111,12 +111,7 @@ const CreatePostPage = () => {
                   className={`${state.errors.image ? "border-red-500" : ""}`}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
-                    if (file && file.size > 1024 * 1024) {
-                      toast.error("Image size must be less than 1MB");
-                      event.target.value = "";
-                      setSelectedImage(null);
-                      return;
-                    }
+
                     setSelectedImage(file || null);
                   }}
                 />

@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import BlogList from "./_components/blogList";
 import BlogSkeleton from "./_components/blogSkeleton";
 
+export const dynamic = "force-static";
+
 const BlogPage = async () => {
   return (
     <div className="py-12">

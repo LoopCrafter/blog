@@ -5,6 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
 import { getToken } from "@/lib/auth-server";
 import { zodToFieldErrors } from "../helper";
+import { revalidatePath } from "next/cache";
 
 export const createBlogAction = async (_: any, formData: FormData) => {
   const titleRaw = formData.get("title");
@@ -83,5 +84,6 @@ export const createBlogAction = async (_: any, formData: FormData) => {
       data: blogData,
     };
   }
+  revalidatePath("/blog");
   redirect("/");
 };
