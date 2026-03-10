@@ -6,6 +6,7 @@ import { fetchQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import CommentSection from "../_components/CommentSection";
 
 type PostDetailPageProps = {
   params: {
@@ -47,6 +48,7 @@ const PostDetailPage = async ({ params }: PostDetailPageProps) => {
         {post.content}
       </p>
       <Separator className="my-6" />
+      <CommentSection />
     </div>
   );
 };
