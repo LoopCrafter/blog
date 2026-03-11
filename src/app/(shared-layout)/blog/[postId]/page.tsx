@@ -13,12 +13,14 @@ type PostDetailPageProps = {
     postId: Id<"posts">;
   };
 };
+
 const PostDetailPage = async ({ params }: PostDetailPageProps) => {
   const { postId } = await params;
   const post = await fetchQuery(api.posts.getPostById, { postId });
+
   if (!post)
     return (
-      <div className="h-62.5 flex items-center justify-center">
+      <div className="h-62.5 flex items-center justify-center text-6xl font-extrabold text-red-500 p-20">
         Post not found
       </div>
     );
