@@ -18,20 +18,25 @@ import { Separator } from "@/src/components/ui/separator";
 import { Textarea } from "@/src/components/ui/textarea";
 import { CommentSchema, CommentType } from "@/src/schemas/comments";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "convex/react";
+import {
+  Preloaded,
+  useMutation,
+  usePreloadedQuery,
+  useQuery,
+} from "convex/react";
 import { Loader2, MessagesSquare } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-const CommentSection = () => {
+const CommentSection = (props: {
+  preloadedComments: Preloaded<typeof api.comments.getCommentsByPost>;
+}) => {
   const [isPending, startTransition] = useTransition();
   const params = useParams<{ postId: Id<"posts"> }>();
 
-  const comments = useQuery(api.comments.getCommentsByPost, {
-    postId: params.postId,
-  });
+  const comments = usePreloadedQuery(props.preloadedComments);
   const createComment = useMutation(api.comments.createComment);
   const form = useForm({
     resolver: zodResolver(CommentSchema),

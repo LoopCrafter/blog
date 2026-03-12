@@ -2,7 +2,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { buttonVariants } from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
-import { fetchQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +17,9 @@ type PostDetailPageProps = {
 const PostDetailPage = async ({ params }: PostDetailPageProps) => {
   const { postId } = await params;
   const post = await fetchQuery(api.posts.getPostById, { postId });
-
+  const preloadedComments = await preloadQuery(api.comments.getCommentsByPost, {
+    postId,
+  });
   if (!post)
     return (
       <div className="h-62.5 flex items-center justify-center text-6xl font-extrabold text-red-500 p-20">
@@ -50,7 +52,7 @@ const PostDetailPage = async ({ params }: PostDetailPageProps) => {
         {post.content}
       </p>
       <Separator className="my-6" />
-      <CommentSection />
+      <CommentSection preloadedComments={preloadedComments} />
     </div>
   );
 };
