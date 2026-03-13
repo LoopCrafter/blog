@@ -16,10 +16,12 @@ type PostDetailPageProps = {
 
 const PostDetailPage = async ({ params }: PostDetailPageProps) => {
   const { postId } = await params;
-  const post = await fetchQuery(api.posts.getPostById, { postId });
-  const preloadedComments = await preloadQuery(api.comments.getCommentsByPost, {
-    postId,
-  });
+  const [post, preloadedComments] = await Promise.all([
+    await fetchQuery(api.posts.getPostById, { postId }),
+    await preloadQuery(api.comments.getCommentsByPost, {
+      postId,
+    }),
+  ]);
   if (!post)
     return (
       <div className="h-62.5 flex items-center justify-center text-6xl font-extrabold text-red-500 p-20">
