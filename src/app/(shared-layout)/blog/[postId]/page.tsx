@@ -7,13 +7,28 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import CommentSection from "../_components/CommentSection";
+import { Metadata } from "next";
 
 type PostDetailPageProps = {
   params: {
     postId: Id<"posts">;
   };
 };
-
+export const generateMetadata = async ({
+  params,
+}: PostDetailPageProps): Promise<Metadata> => {
+  const { postId } = await params;
+  const post = await fetchQuery(api.posts.getPostById, { postId });
+  if (!post) {
+    return {
+      title: "404 not found!",
+    };
+  }
+  return {
+    title: post.title,
+    description: post.content,
+  };
+};
 const PostDetailPage = async ({ params }: PostDetailPageProps) => {
   const { postId } = await params;
   const [post, preloadedComments] = await Promise.all([

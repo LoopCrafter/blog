@@ -1,9 +1,12 @@
 import { Suspense } from "react";
 import BlogList from "./_components/blogList";
 import BlogSkeleton from "./_components/blogSkeleton";
+import { Metadata } from "next";
 
 export const dynamic = "force-static";
-
+export const metadata: Metadata = {
+  title: "Aprin | Blog",
+};
 const BlogPage = async () => {
   return (
     <div className="py-12">

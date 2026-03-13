@@ -3,7 +3,11 @@ import "./globals.css";
 import { ConvexClientProvider } from "../provider/ConvexClientProvider";
 import { getToken } from "@/lib/auth-server";
 import { Toaster } from "@/src/components/ui/sonner";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Aprin | Blog",
+};
 export default async function RootLayout({
   children,
 }: Readonly<{
