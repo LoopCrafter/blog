@@ -9,20 +9,12 @@ import Link from "next/link";
 import CommentSection from "../_components/CommentSection";
 import { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
-
 type PostDetailPageProps = {
   params: {
     postId: Id<"posts">;
   };
 };
-const fakeApi = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("success");
-    }, 4000);
-  });
-};
+
 export const generateMetadata = async ({
   params,
 }: PostDetailPageProps): Promise<Metadata> => {

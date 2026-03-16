@@ -3,9 +3,11 @@ import BlogList from "./_components/blogList";
 import BlogSkeleton from "./_components/blogSkeleton";
 import { Metadata } from "next";
 
-export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Aprin | Blog",
+  description: "Read our latest articles and insights.",
+  category: "Web development",
+  authors: [{ name: "Hamed" }],
 };
 const BlogPage = async () => {
   return (

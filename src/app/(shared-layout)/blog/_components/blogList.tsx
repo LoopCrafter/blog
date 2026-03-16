@@ -4,8 +4,10 @@ import { Card, CardContent, CardFooter } from "@/src/components/ui/card";
 import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 
 const BlogList = async () => {
+  await connection();
   const results = await fetchQuery(api.posts.getPosts, {});
 
   if (!results) return null;
