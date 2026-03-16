@@ -1,7 +1,6 @@
 import { ThemeProvider } from "@/src/provider/theme-provider";
 import "./globals.css";
 import { ConvexClientProvider } from "../provider/ConvexClientProvider";
-import { getToken } from "@/lib/auth-server";
 import { Toaster } from "@/src/components/ui/sonner";
 import { Metadata } from "next";
 
@@ -13,7 +12,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = await getToken();
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
@@ -24,9 +22,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <main className="px-8">
-            <ConvexClientProvider initialToken={token}>
-              {children}
-            </ConvexClientProvider>
+            <ConvexClientProvider>{children}</ConvexClientProvider>
           </main>
           <Toaster closeButton />
         </ThemeProvider>
