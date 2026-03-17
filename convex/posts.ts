@@ -30,7 +30,7 @@ export const getPosts = query({
     cursor: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const PAGE_SIZE = 6;
+    const PAGE_SIZE = 9;
 
     const result = await ctx.db
       .query("posts")
