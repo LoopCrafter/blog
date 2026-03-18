@@ -54,7 +54,7 @@ const CreatePostPage = () => {
   }, [state, router]);
 
   return (
-    <div className="py-12">
+    <div className="py-4">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           Create Post

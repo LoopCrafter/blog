@@ -14,13 +14,16 @@ const Sidebar = () => {
         <CardContent className="px-2">
           <ul className="space-y-2">
             <li>
-              <Link href="/dashboard/my-posts">My Posts</Link>
+              <Link href="/dashboard/my-posts" className="w-full block">
+                My Posts
+              </Link>
             </li>
             <li>
               <Separator />
             </li>
             <li className="text-red-600">
               <button
+                className="w-full text-left"
                 onClick={async () =>
                   await authClient.signOut({
                     fetchOptions: {

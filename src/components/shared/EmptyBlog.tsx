@@ -1,4 +1,6 @@
 import { FileText } from "lucide-react";
+import Link from "next/link";
+import { buttonVariants } from "../ui/button";
 
 const EmptyBlog = () => {
   return (
@@ -12,6 +14,9 @@ const EmptyBlog = () => {
         You don’t have any blog posts right now. Start by creating your first
         post.
       </p>
+      <Link href="/dashboard/create" className={`${buttonVariants()} mt-6`}>
+        Create New Post
+      </Link>
     </div>
   );
 };
