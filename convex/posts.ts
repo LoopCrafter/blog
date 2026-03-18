@@ -7,6 +7,7 @@ export const createPost = mutation({
     title: v.string(),
     content: v.string(),
     imageStorageId: v.id("_storage"),
+    status: v.union(v.literal("publish"), v.literal("draft")),
   },
   handler: async (ctx, args) => {
     const user = await authComponent.safeGetAuthUser(ctx);
@@ -19,6 +20,7 @@ export const createPost = mutation({
       content: args.content,
       authorId: user._id,
       imageStorageId: args.imageStorageId,
+      status: args.status,
     });
 
     return blogArticle;

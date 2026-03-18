@@ -27,9 +27,11 @@ export function Navbar() {
           <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
             <Link href="/blog">Blog</Link>
           </li>
-          <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
-            <Link href="/create">Create</Link>
-          </li>
+          {isAuthenticated && (
+            <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+          )}
         </ul>
       </div>
       <div className="flex items-center gap-2">
