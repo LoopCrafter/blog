@@ -2,6 +2,7 @@
 import { authClient } from "@/lib/auth-client";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Separator } from "@/src/components/ui/separator";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -12,7 +13,9 @@ const Sidebar = () => {
       <Card className="w-full max-w-xl mx-auto p-2 ">
         <CardContent className="px-2">
           <ul className="space-y-2">
-            <li>My Posts</li>
+            <li>
+              <Link href="/dashboard/my-posts">My Posts</Link>
+            </li>
             <li>
               <Separator />
             </li>

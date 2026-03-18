@@ -99,3 +99,21 @@ export const generateImageUploadUrl = mutation({
     return await ctx.storage.generateUploadUrl();
   },
 });
+
+export const getPostsByUser = query({
+  args: {},
+  handler: async (ctx, args) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+    const posts = await ctx.db
+      .query("posts")
+      .withIndex("by_authorId", (q) => q.eq("authorId", user._id))
+      .order("desc")
+      .collect();
+
+    return posts ?? [];
+  },
+});
