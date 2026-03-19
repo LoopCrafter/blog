@@ -14,6 +14,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/src/components/ui/field";
+import { Checkbox } from "@/src/components/ui/checkbox";
 import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 import { Loader2 } from "lucide-react";
@@ -24,7 +25,7 @@ import { toast } from "sonner";
 type InitialState = {
   errors: Record<string, string>;
   success: boolean;
-  data: Record<string, string | File | null>;
+  data: Record<string, string | File | null | boolean>;
 };
 
 const initialState: InitialState = {
@@ -39,6 +40,9 @@ const CreatePostPage = () => {
     initialState,
   );
 
+  const [draftChecked, setDraftChecked] = useState(
+    state?.data?.status === true,
+  );
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   useEffect(() => {
@@ -49,10 +53,11 @@ const CreatePostPage = () => {
       router.push("/");
       return;
     }
-
+    if (state.data.status) {
+      setDraftChecked(!!state.data.status);
+    }
     if (state.errors?.general) toast.error(state.errors.general);
   }, [state, router]);
-
   return (
     <div className="py-4">
       <div className="text-center mb-12">
@@ -107,7 +112,6 @@ const CreatePostPage = () => {
                   type="file"
                   name="image"
                   accept="image/*"
-                  value={selectedImage ? undefined : ""}
                   className={`${state.errors.image ? "border-red-500" : ""}`}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
@@ -121,6 +125,15 @@ const CreatePostPage = () => {
                     {state.errors.image}
                   </span>
                 )}
+              </Field>
+              <Field orientation="horizontal">
+                <Checkbox
+                  id="status"
+                  name="status"
+                  checked={draftChecked}
+                  onCheckedChange={(value) => setDraftChecked(!!value)}
+                />
+                <FieldLabel htmlFor="status">Draft?</FieldLabel>
               </Field>
               <Button className="mt-6" disabled={isPending}>
                 {isPending ? (

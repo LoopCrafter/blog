@@ -10,6 +10,7 @@ export const blogSchema = z.object({
     .min(10, "Content is Too Short")
     .max(5000, "Content must be less than 5000 characters"),
   image: z.instanceof(File),
+  status: z.enum(["publish", "draft"]),
 });
 
 export type Blog = z.infer<typeof blogSchema>;

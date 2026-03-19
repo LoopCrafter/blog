@@ -5,17 +5,21 @@ import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
 import { getToken } from "@/lib/auth-server";
 import { zodToFieldErrors } from "../helper";
-import { revalidatePath, updateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export const createBlogAction = async (_: any, formData: FormData) => {
   const titleRaw = formData.get("title");
   const contentRaw = formData.get("content");
+  const statusRaw = formData.get("status");
+  const status = statusRaw === "on" ? "draft" : "publish";
   const image = formData.get("image") as File;
   const blogData = {
     title: typeof titleRaw === "string" ? titleRaw : "",
     content: typeof contentRaw === "string" ? contentRaw : "",
+    status: statusRaw === "on" ? "draft" : "publish",
     image,
   };
+
   const result = blogSchema.safeParse(blogData);
   const errors: Record<string, string> = {};
   if (!result.success) {
@@ -50,19 +54,30 @@ export const createBlogAction = async (_: any, formData: FormData) => {
     }
 
     const { storageId } = await uploadResult.json();
-
+    console.log(
+      "ja,ed",
+      {
+        title: blogData.title,
+        content: blogData.content,
+        imageStorageId: storageId,
+        status,
+      },
+      "inputL",
+      formData.get("status"),
+    );
     await fetchMutation(
       api.posts.createPost,
       {
         title: blogData.title,
         content: blogData.content,
         imageStorageId: storageId,
+        status,
       },
       { token },
     );
   } catch (error: unknown) {
     const raw = error instanceof Error ? error.message : "";
-
+    console.log("hamed hamed", raw);
     const isAuthError =
       raw.includes("User not authenticated") ||
       raw.includes("Unauthorized") ||
@@ -85,5 +100,5 @@ export const createBlogAction = async (_: any, formData: FormData) => {
     };
   }
   updateTag("blog");
-  redirect("/blog");
+  redirect("/dashboard/my-posts");
 };

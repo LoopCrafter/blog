@@ -1,4 +1,5 @@
 import { api } from "@/convex/_generated/api";
+import EmptyBlog from "@/src/components/shared/EmptyBlog";
 import { buttonVariants } from "@/src/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/src/components/ui/card";
 import { fetchQuery } from "convex/nextjs";
@@ -13,8 +14,9 @@ const BlogList = async () => {
   const results = await fetchQuery(api.posts.getPosts, {});
 
   if (!results) return null;
-
   const { items, nextCursor } = results;
+
+  if (!items.length) return <EmptyBlog />;
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
       {items?.map((post) => (
