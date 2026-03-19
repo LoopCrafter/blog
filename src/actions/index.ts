@@ -54,17 +54,7 @@ export const createBlogAction = async (_: any, formData: FormData) => {
     }
 
     const { storageId } = await uploadResult.json();
-    console.log(
-      "ja,ed",
-      {
-        title: blogData.title,
-        content: blogData.content,
-        imageStorageId: storageId,
-        status,
-      },
-      "inputL",
-      formData.get("status"),
-    );
+
     await fetchMutation(
       api.posts.createPost,
       {
@@ -77,7 +67,6 @@ export const createBlogAction = async (_: any, formData: FormData) => {
     );
   } catch (error: unknown) {
     const raw = error instanceof Error ? error.message : "";
-    console.log("hamed hamed", raw);
     const isAuthError =
       raw.includes("User not authenticated") ||
       raw.includes("Unauthorized") ||
