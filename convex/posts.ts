@@ -108,12 +108,31 @@ export const getPostsByUser = query({
     if (!user) {
       throw new Error("User not authenticated");
     }
-    const posts = await ctx.db
+    const result = await ctx.db
       .query("posts")
       .withIndex("by_authorId", (q) => q.eq("authorId", user._id))
       .order("desc")
       .collect();
 
-    return posts ?? [];
+    const items = await Promise.all(
+      result.map(async (post) => {
+        const resolvedImageUrl =
+          post.imageStorageId !== undefined
+            ? await ctx.storage.getUrl(post.imageStorageId)
+            : null;
+
+        return {
+          id: post._id,
+          createdAt: post._creationTime,
+          authorId: post.authorId,
+          excerpt: post.content.slice(0, 140),
+          content: post.content,
+          title: post.title,
+          imageUrl: resolvedImageUrl,
+        };
+      }),
+    );
+
+    return items ?? [];
   },
 });

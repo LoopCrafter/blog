@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         port: "",
       },
+      {
+        hostname: "placehold.net",
+        protocol: "https",
+        port: "",
+      },
     ],
   },
 };

@@ -7,7 +7,7 @@ const MyPostsPage = async () => {
   return (
     <div>
       {/* <MyPosts /> */}
-      <h1 className="flex items-center justify-between">
+      <h1 className="flex items-center justify-between mb-6">
         <span className="text-xl font-bold">My Posts</span>
         <Link href="/dashboard/create" className={buttonVariants()}>
           Create New Post
