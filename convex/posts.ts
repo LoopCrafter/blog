@@ -6,7 +6,7 @@ export const createPost = mutation({
   args: {
     title: v.string(),
     content: v.string(),
-    imageStorageId: v.id("_storage"),
+    imageStorageId: v.optional(v.id("_storage")),
     status: v.union(v.literal("publish"), v.literal("draft")),
   },
   handler: async (ctx, args) => {

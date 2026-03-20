@@ -11,7 +11,7 @@ export const createBlogAction = async (_: any, formData: FormData) => {
   const titleRaw = formData.get("title");
   const contentRaw = formData.get("content");
   const statusRaw = formData.get("status");
-  const status = statusRaw === "on" ? "draft" : "publish";
+  const status: "draft" | "publish" = statusRaw === "on" ? "draft" : "publish";
   const image = formData.get("image") as File;
   const blogData = {
     title: typeof titleRaw === "string" ? titleRaw : "",
@@ -36,35 +36,35 @@ export const createBlogAction = async (_: any, formData: FormData) => {
 
   const token = await getToken();
   try {
-    const imageUrl = await fetchMutation(
-      api.posts.generateImageUploadUrl,
-      {},
-      { token },
-    );
-    const uploadResult = await fetch(imageUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": image.type,
-      },
-      body: image,
-    });
-    if (!uploadResult.ok) {
-      console.error("Image upload failed", await uploadResult.text());
-      throw new Error("Failed to upload image");
+    const requestObj = {
+      title: blogData.title,
+      content: blogData.content,
+      imageStorageId: undefined,
+      status,
+    };
+    if (image && image.size > 0) {
+      console.log("hamed", image);
+      const imageUrl = await fetchMutation(
+        api.posts.generateImageUploadUrl,
+        {},
+        { token },
+      );
+      const uploadResult = await fetch(imageUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": image.type,
+        },
+        body: image,
+      });
+      if (!uploadResult.ok) {
+        console.error("Image upload failed", await uploadResult.text());
+        throw new Error("Failed to upload image");
+      }
+
+      const { storageId } = await uploadResult.json();
+      requestObj["imageStorageId"] = storageId;
     }
-
-    const { storageId } = await uploadResult.json();
-
-    await fetchMutation(
-      api.posts.createPost,
-      {
-        title: blogData.title,
-        content: blogData.content,
-        imageStorageId: storageId,
-        status,
-      },
-      { token },
-    );
+    await fetchMutation(api.posts.createPost, requestObj, { token });
   } catch (error: unknown) {
     const raw = error instanceof Error ? error.message : "";
     const isAuthError =

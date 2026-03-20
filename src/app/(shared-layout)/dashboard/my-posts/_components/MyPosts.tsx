@@ -19,7 +19,7 @@ const MyPosts = async () => {
       {posts?.map((post) => (
         <Card
           key={post.id}
-          className="overflow-hidden pt-0 transition-shadow hover:shadow-lg"
+          className="overflow-hidden py-0 transition-shadow hover:shadow-lg gap-3"
         >
           <div className="relative h-48">
             <Image
@@ -30,7 +30,7 @@ const MyPosts = async () => {
             />
           </div>
 
-          <CardContent className="space-y-3 p-5">
+          <CardContent className="space-y-3">
             <Link
               href={`/blog/${post.id}`}
               className="block transition-opacity hover:opacity-80"
@@ -38,7 +38,7 @@ const MyPosts = async () => {
               <h2 className="line-clamp-2 text-xl font-bold">{post.title}</h2>
             </Link>
 
-            <p className="line-clamp-3 text-sm text-muted-foreground">
+            <p className="line-clamp-1 text-sm text-muted-foreground">
               {post.content}
             </p>
           </CardContent>
