@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { Id } from "@/convex/_generated/dataModel";
 
 type InitialState = {
   errors: Record<string, string>;
@@ -34,6 +35,7 @@ type PostFormValues = {
   content: string;
   status: "publish" | "draft";
   imageUrl?: string | null;
+  id: Id<"posts">;
 };
 
 type PostFormProps = {
@@ -107,7 +109,7 @@ export function PostForm({
       toast.error(state.errors.general);
     }
   }, [state, router, successMessage, redirectPath]);
-
+  console.log("clientL: ", state);
   return (
     <Card className="mx-auto w-full max-w-xl">
       <CardHeader>
@@ -121,7 +123,7 @@ export function PostForm({
             {postId ? (
               <input type="hidden" name="postId" value={postId} />
             ) : null}
-
+            <input type="hidden" value={initialValues?.id} name="postId" />
             <Field>
               <FieldLabel>Title</FieldLabel>
               <Input

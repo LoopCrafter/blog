@@ -82,9 +82,9 @@ export const editBlogAction = async (_: any, formData: FormData) => {
       content: validation.data.content,
       status: validation.data.status,
       ...(imageStorageId ? { imageStorageId } : {}),
+      postId: blogData.postId,
     };
-    console.log("hamed hamed ", requestObj);
-    // await fetchMutation(api.posts.createPost, requestObj, { token });
+    await fetchMutation(api.posts.updatePost, requestObj, { token });
   } catch (error: unknown) {
     handleActionError(error);
 
@@ -96,4 +96,6 @@ export const editBlogAction = async (_: any, formData: FormData) => {
       data: blogData,
     };
   }
+  updateTag("blog");
+  redirect("/dashboard/my-posts");
 };

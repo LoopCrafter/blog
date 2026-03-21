@@ -27,6 +27,42 @@ export const createPost = mutation({
   },
 });
 
+export const updatePost = mutation({
+  args: {
+    postId: v.id("posts"),
+    title: v.string(),
+    content: v.string(),
+    imageStorageId: v.optional(v.id("_storage")),
+    status: v.union(v.literal("publish"), v.literal("draft")),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const existingPost = await ctx.db.get(args.postId);
+
+    if (!existingPost) {
+      throw new Error("Post not found");
+    }
+
+    if (existingPost.authorId !== user._id) {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.patch(args.postId, {
+      title: args.title,
+      content: args.content,
+      imageStorageId: args.imageStorageId,
+      status: args.status,
+    });
+
+    return args.postId;
+  },
+});
+
 export const getPosts = query({
   args: {
     cursor: v.optional(v.string()),

@@ -33,6 +33,9 @@ export function getBlogFormValues(formData: FormData) {
   const imageRaw = formData.get("image");
   const removeImageRaw = formData.get("removeImage");
   const removeImage = removeImageRaw === "true";
+  const postIdRaw = formData.get("postId") || "";
+
+  const postId = postIdRaw as Id<"posts">;
 
   const image = imageRaw instanceof File && imageRaw.size > 0 ? imageRaw : null;
 
@@ -42,6 +45,7 @@ export function getBlogFormValues(formData: FormData) {
     status: statusRaw === "on" ? "draft" : "publish",
     image,
     removeImage,
+    postId: postId,
   } as const;
 
   return values;
