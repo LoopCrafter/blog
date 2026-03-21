@@ -23,7 +23,10 @@ const MyPosts = async () => {
         >
           <div className="relative h-48">
             <Image
-              src={post.imageUrl ?? "https://placehold.net/600x600.png"}
+              src={
+                post.imageUrl ??
+                "https://placehold.jp/040c81/ffffff/600x600.png?text=Image%20Not%20Available&css=%7B%22border-radius%22%3A%2215px%22%2C%22font-size%22%3A%2252px%22%7D"
+              }
               alt={post.title}
               fill
               className="object-cover"
@@ -31,12 +34,15 @@ const MyPosts = async () => {
           </div>
 
           <CardContent className="space-y-3">
-            <Link
-              href={`/blog/${post.id}`}
-              className="block transition-opacity hover:opacity-80"
-            >
-              <h2 className="line-clamp-2 text-xl font-bold">{post.title}</h2>
-            </Link>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold line-clamp-1">{post.title}</h2>
+
+              {post.status === "draft" && (
+                <span className="rounded bg-yellow-100 px-2 py-0.5 text-xs text-yellow-700">
+                  Draft
+                </span>
+              )}
+            </div>
 
             <p className="line-clamp-1 text-sm text-muted-foreground">
               {post.content}

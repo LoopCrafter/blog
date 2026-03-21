@@ -57,6 +57,7 @@ export const getPosts = query({
           content: post.content,
           title: post.title,
           imageUrl: resolvedImageUrl,
+          status: post.status,
         };
       }),
     );
@@ -129,6 +130,7 @@ export const getPostsByUser = query({
           content: post.content,
           title: post.title,
           imageUrl: resolvedImageUrl,
+          status: post.status,
         };
       }),
     );

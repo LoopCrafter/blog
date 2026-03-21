@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
         port: "",
       },
       {
-        hostname: "placehold.net",
+        hostname: "placehold.jp",
         protocol: "https",
         port: "",
       },
