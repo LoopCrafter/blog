@@ -38,7 +38,7 @@ const PostDetailPage = async ({ params }: PostDetailPageProps) => {
       postId,
     }),
   ]);
-  await new Promise((resolve) => setTimeout(resolve, 4000));
+
   if (!post)
     return (
       <div className="h-62.5 flex items-center justify-center text-6xl font-extrabold text-red-500 p-20">

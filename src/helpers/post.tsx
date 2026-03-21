@@ -31,6 +31,8 @@ export function getBlogFormValues(formData: FormData) {
   const contentRaw = formData.get("content");
   const statusRaw = formData.get("status");
   const imageRaw = formData.get("image");
+  const removeImageRaw = formData.get("removeImage");
+  const removeImage = removeImageRaw === "true";
 
   const image = imageRaw instanceof File && imageRaw.size > 0 ? imageRaw : null;
 
@@ -39,6 +41,7 @@ export function getBlogFormValues(formData: FormData) {
     content: typeof contentRaw === "string" ? contentRaw : "",
     status: statusRaw === "on" ? "draft" : "publish",
     image,
+    removeImage,
   } as const;
 
   return values;

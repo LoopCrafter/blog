@@ -87,6 +87,7 @@ export const getPostById = query({
       content: post.content,
       title: post.title,
       imageUrl,
+      status: post.status,
     };
   },
 });

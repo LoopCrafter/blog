@@ -56,3 +56,44 @@ export const createBlogAction = async (_: any, formData: FormData) => {
   updateTag("blog");
   redirect("/dashboard/my-posts");
 };
+
+export const editBlogAction = async (_: any, formData: FormData) => {
+  const blogData = getBlogFormValues(formData);
+
+  const validation = validateBlogForm(blogSchema, blogData, zodToFieldErrors);
+
+  if (!validation.success) {
+    return {
+      success: false,
+      errors: validation.errors,
+      data: blogData,
+    };
+  }
+
+  try {
+    const token = await getToken();
+    const imageStorageId = await uploadPostImageIfNeeded({
+      image: blogData.image,
+      token,
+    });
+
+    const requestObj = {
+      title: validation.data.title,
+      content: validation.data.content,
+      status: validation.data.status,
+      ...(imageStorageId ? { imageStorageId } : {}),
+    };
+    console.log("hamed hamed ", requestObj);
+    // await fetchMutation(api.posts.createPost, requestObj, { token });
+  } catch (error: unknown) {
+    handleActionError(error);
+
+    return {
+      success: false,
+      errors: {
+        general: getActionErrorMessage(error),
+      },
+      data: blogData,
+    };
+  }
+};

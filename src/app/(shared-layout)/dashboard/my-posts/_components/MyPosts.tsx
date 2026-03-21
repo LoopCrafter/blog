@@ -51,7 +51,7 @@ const MyPosts = async () => {
 
           <CardFooter className="grid grid-cols-2 gap-3 px-5 pb-5 pt-0">
             <Link
-              href={`/blog/${post.id}/edit`}
+              href={`/dashboard/my-posts/${post.id}`}
               className={buttonVariants({
                 variant: "outline",
                 className: "w-full",

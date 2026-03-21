@@ -17,10 +17,11 @@ import {
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 type InitialState = {
   errors: Record<string, string>;
@@ -31,7 +32,8 @@ type InitialState = {
 type PostFormValues = {
   title: string;
   content: string;
-  status: boolean;
+  status: "publish" | "draft";
+  imageUrl?: string | null;
 };
 
 type PostFormProps = {
@@ -80,9 +82,12 @@ export function PostForm({
   );
 
   const [state, formAction, isPending] = useActionState(action, initialState);
+  const [currentImageUrl, setCurrentImageUrl] = useState(
+    initialValues?.imageUrl ?? null,
+  );
 
   const [draftChecked, setDraftChecked] = useState(
-    Boolean(initialState.data.status),
+    initialState.data.status === "draft",
   );
 
   useEffect(() => {
@@ -150,13 +155,33 @@ export function PostForm({
 
             <Field>
               <FieldLabel htmlFor="picture">Picture</FieldLabel>
-              <Input
-                id="picture"
-                type="file"
-                name="image"
-                accept="image/*"
-                className={state.errors.image ? "border-red-500" : ""}
-              />
+              {currentImageUrl ? (
+                <div className="relative">
+                  <Button
+                    type="button"
+                    className="absolute right-3 top-3"
+                    onClick={() => setCurrentImageUrl(null)}
+                  >
+                    <X className="size-4 text-white" />
+                    <span>Remove</span>
+                  </Button>
+                  <Image
+                    className="w-full rounded-lg"
+                    src={currentImageUrl}
+                    alt={state.data.title as string}
+                    width={500}
+                    height={300}
+                  />
+                </div>
+              ) : (
+                <Input
+                  id="picture"
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  className={state.errors.image ? "border-red-500" : ""}
+                />
+              )}
               <FieldDescription>Select a picture to upload.</FieldDescription>
               {state.errors.image ? (
                 <span className="text-sm text-red-500">
