@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { authComponent } from "./betterAuth/auth";
+import { Id } from "./_generated/dataModel";
 
 export const createPost = mutation({
   args: {
@@ -34,6 +35,7 @@ export const updatePost = mutation({
     content: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
     status: v.union(v.literal("publish"), v.literal("draft")),
+    removeImage: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const user = await authComponent.safeGetAuthUser(ctx);
@@ -52,12 +54,26 @@ export const updatePost = mutation({
       throw new Error("Unauthorized");
     }
 
-    await ctx.db.patch(args.postId, {
+    const patchData: {
+      title: string;
+      content: string;
+      status: "publish" | "draft";
+      imageStorageId?: Id<"_storage">;
+    } = {
       title: args.title,
       content: args.content,
-      imageStorageId: args.imageStorageId,
       status: args.status,
-    });
+    };
+
+    if (args.removeImage) {
+      patchData.imageStorageId = undefined;
+    }
+
+    if (args.imageStorageId) {
+      patchData.imageStorageId = args.imageStorageId;
+    }
+
+    await ctx.db.patch(args.postId, patchData);
 
     return args.postId;
   },

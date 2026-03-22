@@ -15,8 +15,6 @@ const EditPagewrapper = async ({ params }: { params: { id: Id<"posts"> } }) => {
       </div>
     );
 
-  console.log("hamed", post);
-
   return (
     <Suspense>
       <div className="py-4">

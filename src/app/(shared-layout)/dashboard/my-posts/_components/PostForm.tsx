@@ -27,7 +27,7 @@ import { Id } from "@/convex/_generated/dataModel";
 type InitialState = {
   errors: Record<string, string>;
   success: boolean;
-  data: Record<string, string | File | null | boolean>;
+  data: Record<string, string | File | undefined | boolean>;
 };
 
 type PostFormValues = {
@@ -109,7 +109,7 @@ export function PostForm({
       toast.error(state.errors.general);
     }
   }, [state, router, successMessage, redirectPath]);
-  console.log("clientL: ", state);
+
   return (
     <Card className="mx-auto w-full max-w-xl">
       <CardHeader>
@@ -124,6 +124,11 @@ export function PostForm({
               <input type="hidden" name="postId" value={postId} />
             ) : null}
             <input type="hidden" value={initialValues?.id} name="postId" />
+            <input
+              type="hidden"
+              name="removeImage"
+              value={!currentImageUrl ? "true" : "false"}
+            />
             <Field>
               <FieldLabel>Title</FieldLabel>
               <Input

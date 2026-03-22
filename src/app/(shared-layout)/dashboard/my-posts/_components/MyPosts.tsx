@@ -15,7 +15,7 @@ const MyPosts = async () => {
     return <EmptyBlog />;
   }
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 py-10">
       {posts?.map((post) => (
         <Card
           key={post.id}

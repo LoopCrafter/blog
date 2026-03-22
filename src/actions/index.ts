@@ -72,16 +72,20 @@ export const editBlogAction = async (_: any, formData: FormData) => {
 
   try {
     const token = await getToken();
-    const imageStorageId = await uploadPostImageIfNeeded({
-      image: blogData.image,
-      token,
-    });
+    let imageStorageId = null;
+    if (blogData.image) {
+      imageStorageId = await uploadPostImageIfNeeded({
+        image: blogData.image,
+        token,
+      });
+    }
 
     const requestObj = {
       title: validation.data.title,
       content: validation.data.content,
       status: validation.data.status,
       ...(imageStorageId ? { imageStorageId } : {}),
+      ...(blogData.removeImage ? { removeImage: true } : {}),
       postId: blogData.postId,
     };
     await fetchMutation(api.posts.updatePost, requestObj, { token });

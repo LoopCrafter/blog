@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 
 type UploadImageArgs = {
-  image: File | null;
+  image?: File;
   token?: string;
 };
 
@@ -37,7 +37,8 @@ export function getBlogFormValues(formData: FormData) {
 
   const postId = postIdRaw as Id<"posts">;
 
-  const image = imageRaw instanceof File && imageRaw.size > 0 ? imageRaw : null;
+  const image =
+    imageRaw instanceof File && imageRaw.size > 0 ? imageRaw : undefined;
 
   const values = {
     title: typeof titleRaw === "string" ? titleRaw : "",
