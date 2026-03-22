@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const BlogPage = async () => {
   return (
     <div className="py-12">
-      <div className="text-center">
+      <div className="text-center mb-6">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           Our Blog
         </h1>

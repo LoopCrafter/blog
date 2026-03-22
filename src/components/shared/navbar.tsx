@@ -29,7 +29,7 @@ export function Navbar() {
           </li>
           {isAuthenticated && (
             <li className={`${cn(buttonVariants({ variant: "ghost" }))}`}>
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/dashboard/my-posts">Dashboard</Link>
             </li>
           )}
         </ul>

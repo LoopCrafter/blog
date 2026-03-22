@@ -1,11 +1,9 @@
+import { Button, buttonVariants } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import EmptyBlog from "@/src/components/shared/EmptyBlog";
 import PostCard from "@/src/components/shared/PostCard";
-import { buttonVariants } from "@/src/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/src/components/ui/card";
 import { fetchQuery } from "convex/nextjs";
 import { cacheLife, cacheTag } from "next/cache";
-import Image from "next/image";
 import Link from "next/link";
 
 const BlogList = async () => {
@@ -21,7 +19,16 @@ const BlogList = async () => {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
       {items?.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard key={post.id} post={post}>
+          <div className="p-4 text-right">
+            <Link
+              href={`/blog/${post.id}`}
+              className={buttonVariants({ variant: "default" })}
+            >
+              Read More{" "}
+            </Link>
+          </div>
+        </PostCard>
       ))}
     </div>
   );

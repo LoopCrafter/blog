@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import MyPosts from "./_components/MyPosts";
 import { Button, buttonVariants } from "@/src/components/ui/button";
 import Link from "next/link";
+import BlogSkeleton from "../../blog/_components/blogSkeleton";
 
 const MyPostsPage = async () => {
   return (
@@ -13,7 +14,7 @@ const MyPostsPage = async () => {
           Create New Post
         </Link>
       </h1>
-      <Suspense fallback={<div>LOADING...</div>}>
+      <Suspense fallback={<BlogSkeleton />}>
         <MyPosts />
       </Suspense>
     </div>

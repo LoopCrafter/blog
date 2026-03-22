@@ -8,9 +8,10 @@ import { PostType } from "@/src/types";
 type PostCardProps = {
   post: PostType;
   cardAction?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
-const PostCard = ({ post, cardAction }: PostCardProps) => {
+const PostCard = ({ post, cardAction, children }: PostCardProps) => {
   return (
     <Card className="overflow-hidden py-0 transition-shadow hover:shadow-lg gap-3">
       <div className="relative h-48">
@@ -46,6 +47,7 @@ const PostCard = ({ post, cardAction }: PostCardProps) => {
           {cardAction}
         </CardFooter>
       ) : null}
+      {children}
     </Card>
   );
 };
