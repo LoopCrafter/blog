@@ -9,6 +9,7 @@ export default defineSchema({
     imageStorageId: v.optional(v.id("_storage")),
     status: v.union(v.literal("publish"), v.literal("draft")),
   })
+    .index("by_status", ["status"])
     .index("by_authorId", ["authorId"])
     .searchIndex("search_title", {
       searchField: "title",

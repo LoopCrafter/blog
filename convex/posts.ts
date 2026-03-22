@@ -137,6 +137,7 @@ export const getPosts = query({
 
     const result = await ctx.db
       .query("posts")
+      .withIndex("by_status", (q) => q.eq("status", "publish"))
       .order("desc")
       .paginate({
         cursor: args.cursor ?? null,

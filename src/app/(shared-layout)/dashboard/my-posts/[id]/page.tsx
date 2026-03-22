@@ -20,20 +20,21 @@ const EditPagewrapper = async ({ params }: { params: { id: Id<"posts"> } }) => {
       <div className="py-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Create Post
+            Update Your Post
           </h1>
           <p className="text-xl text-muted-foreground pt-4">
-            Share your thoughts and ideas with the world by creating a new post.
+            Update your thoughts and ideas with the world by creating a new
+            post.
           </p>
         </div>
         <PostForm
           action={editBlogAction}
-          submitText="Create Post"
-          pendingText="Creating..."
+          submitText="Update Post"
+          pendingText="Updating..."
           successMessage="Post created!"
           redirectPath="/"
-          formTitle="Create Blog Article"
-          formDescription="Create a new blog article."
+          formTitle="Update Blog Article"
+          formDescription="Update the blog article."
           initialValues={post}
         />
       </div>
