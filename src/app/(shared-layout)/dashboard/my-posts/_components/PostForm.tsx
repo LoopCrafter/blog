@@ -22,28 +22,14 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { Id } from "@/convex/_generated/dataModel";
+import { InitialState, PostType } from "@/src/types";
 
-type InitialState = {
-  errors: Record<string, string>;
-  success: boolean;
-  data: Record<string, string | File | undefined | boolean>;
-};
-
-type PostFormValues = {
-  title: string;
-  content: string;
-  status: "publish" | "draft";
-  imageUrl?: string | null;
-  id: Id<"posts">;
-};
-
-type PostFormProps = {
+export type PostFormProps = {
   action: (
     prevState: InitialState,
     formData: FormData,
   ) => Promise<InitialState>;
-  initialValues?: Partial<PostFormValues>;
+  initialValues?: Partial<PostType>;
   submitText: string;
   pendingText: string;
   successMessage: string;
@@ -54,7 +40,7 @@ type PostFormProps = {
 };
 
 const buildInitialState = (
-  initialValues?: Partial<PostFormValues>,
+  initialValues?: Partial<PostType>,
 ): InitialState => ({
   success: false,
   errors: {},

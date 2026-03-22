@@ -79,6 +79,55 @@ export const updatePost = mutation({
   },
 });
 
+export const deletePostById = mutation({
+  args: {
+    postId: v.id("posts"),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const existingPost = await ctx.db.get(args.postId);
+
+    if (!existingPost) {
+      throw new Error("Post not found");
+    }
+
+    if (existingPost.authorId !== user._id) {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.delete(args.postId);
+    return { message: "Successfully removed!" };
+  },
+});
+
+export const getPostById = query({
+  args: {
+    postId: v.id("posts"),
+  },
+  handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.postId);
+    if (!post) return null;
+    const imageUrl = post.imageStorageId
+      ? await ctx.storage.getUrl(post.imageStorageId)
+      : null;
+
+    return {
+      id: post._id,
+      createdAt: post._creationTime,
+      authorId: post.authorId,
+      content: post.content,
+      title: post.title,
+      imageUrl,
+      status: post.status,
+    };
+  },
+});
+
 export const getPosts = query({
   args: {
     cursor: v.optional(v.string()),
@@ -121,28 +170,6 @@ export const getPosts = query({
   },
 });
 
-export const getPostById = query({
-  args: {
-    postId: v.id("posts"),
-  },
-  handler: async (ctx, args) => {
-    const post = await ctx.db.get(args.postId);
-    if (!post) return null;
-    const imageUrl = post.imageStorageId
-      ? await ctx.storage.getUrl(post.imageStorageId)
-      : null;
-
-    return {
-      id: post._id,
-      createdAt: post._creationTime,
-      authorId: post.authorId,
-      content: post.content,
-      title: post.title,
-      imageUrl,
-      status: post.status,
-    };
-  },
-});
 export const generateImageUploadUrl = mutation({
   args: {},
   handler: async (ctx) => {
