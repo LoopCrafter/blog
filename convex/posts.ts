@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { authComponent } from "./betterAuth/auth";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 
 export const createPost = mutation({
   args: {
@@ -131,22 +131,36 @@ export const getPostById = query({
 export const getPosts = query({
   args: {
     cursor: v.optional(v.string()),
+    page: v.number(),
+    pageSize: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const PAGE_SIZE = 9;
+    const pageSize = args.pageSize ?? 9;
+    const targetPage = Math.max(1, args.page);
+    let cursor: string | null = null;
+    let result = null;
 
-    const result = await ctx.db
-      .query("posts")
-      .withIndex("by_status", (q) => q.eq("status", "publish"))
-      .order("desc")
-      .paginate({
-        cursor: args.cursor ?? null,
-        numItems: PAGE_SIZE,
-      });
+    for (let currentPage = 1; currentPage <= targetPage; currentPage++) {
+      result = await ctx.db
+        .query("posts")
+        .withIndex("by_status", (q) => q.eq("status", "publish"))
+        .order("desc")
+        .paginate({
+          cursor,
+          numItems: pageSize,
+        });
+
+      if (currentPage < targetPage && result.isDone) {
+        break;
+      }
+
+      cursor = result.continueCursor;
+    }
 
     const items = await Promise.all(
-      result.page.map(async (post) => {
-        const resolvedImageUrl =
+      (result?.page ?? []).map(async (post) => {
+        const imageUrl =
           post.imageStorageId !== undefined
             ? await ctx.storage.getUrl(post.imageStorageId)
             : null;
@@ -155,10 +169,10 @@ export const getPosts = query({
           id: post._id,
           createdAt: post._creationTime,
           authorId: post.authorId,
-          excerpt: post.content.slice(0, 140),
+          excerpt: post.content?.slice(0, 140) ?? "",
           content: post.content,
           title: post.title,
-          imageUrl: resolvedImageUrl,
+          imageUrl,
           status: post.status,
         };
       }),
@@ -166,8 +180,57 @@ export const getPosts = query({
 
     return {
       items,
-      nextCursor: result.continueCursor,
+      currentPage: targetPage,
+      hasMore: !(result?.isDone ?? true),
     };
+  },
+});
+
+interface SearchResults {
+  id: string;
+  content: string;
+  title: string;
+}
+export const searchPosts = query({
+  args: {
+    term: v.string(),
+    limit: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const limit = args.limit;
+    const results: SearchResults[] = [];
+    const seen = new Set();
+
+    const pushDocs = async (docs: Array<Doc<"posts">>) => {
+      for (const doc of docs) {
+        if (seen.has(doc._id)) continue;
+        seen.add(doc._id);
+        results.push({
+          id: doc._id,
+          title: doc.title,
+          content: doc.content,
+        });
+        if (results.length >= limit) break;
+      }
+    };
+
+    const titleMatches = await ctx.db
+      .query("posts")
+      .withSearchIndex("search_title", (q) => q.search("title", args.term))
+      .take(limit);
+    await pushDocs(titleMatches);
+
+    if (results.length < limit) {
+      const bodyMatches = await ctx.db
+        .query("posts")
+        .withSearchIndex("search_content", (q) =>
+          q.search("content", args.term),
+        )
+        .take(limit);
+      await pushDocs(bodyMatches);
+    }
+
+    return results;
   },
 });
 

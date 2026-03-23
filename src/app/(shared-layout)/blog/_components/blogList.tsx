@@ -6,19 +6,26 @@ import { fetchQuery } from "convex/nextjs";
 import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 
-const BlogList = async () => {
+type BlogListProps = {
+  currentPage: number;
+};
+
+const PAGE_SIZE = 9;
+
+const BlogList = async ({ currentPage }: BlogListProps) => {
   "use cache";
   cacheLife("hours");
   cacheTag("blog");
-  const results = await fetchQuery(api.posts.getPosts, {});
+  const results = await fetchQuery(api.posts.getPosts, {
+    page: currentPage,
+    pageSize: PAGE_SIZE,
+  });
 
-  if (!results) return null;
-  const { items, nextCursor } = results;
+  if (!results.items.length) return <EmptyBlog />;
 
-  if (!items.length) return <EmptyBlog />;
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
-      {items?.map((post) => (
+      {results.items?.map((post) => (
         <PostCard key={post.id} post={post}>
           <div className="p-4 text-right">
             <Link

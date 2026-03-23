@@ -9,7 +9,16 @@ export const metadata: Metadata = {
   category: "Web development",
   authors: [{ name: "Hamed" }],
 };
-const BlogPage = async () => {
+
+type BlogPageProps = {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+};
+
+const BlogPage = async ({ searchParams }: BlogPageProps) => {
+  const params = await searchParams;
+  const currentPage = Math.max(1, Number(params.page ?? "1") || 1);
   return (
     <div className="py-12">
       <div className="text-center mb-6">
@@ -21,7 +30,7 @@ const BlogPage = async () => {
         </p>
       </div>
       <Suspense fallback={<BlogSkeleton />}>
-        <BlogList />
+        <BlogList currentPage={currentPage} />
       </Suspense>
     </div>
   );
