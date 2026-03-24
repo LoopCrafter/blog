@@ -2,6 +2,15 @@
 
 A modern full-stack blog application built with **Next.js App Router**, focused on clean architecture, server-driven mutations, and production-ready patterns.
 
+<img width="800" height="600" alt="preview-bloglist" src="https://github.com/user-attachments/assets/705b4d7a-0a34-4cba-87b6-f4c6126cce43" />
+
+
+<img width="800" height="600" alt="preview-dashboard" src="https://github.com/user-attachments/assets/9e2ece6c-6b3c-4d19-b48d-eded90ad0a00" />
+
+
+<img width="800" height="600" alt="preview-create" src="https://github.com/user-attachments/assets/7765e7fe-ad33-43c2-84c1-ef1779cac3ab" />
+
+
 ---
 
 ## 🚀 Overview
@@ -90,36 +99,6 @@ This project is a production-minded blog platform that demonstrates:
 
 ---
 
-## 🐳 DevOps
-
-### Docker
-
-- Containerized application
-- Easy local setup
-
-### CI/CD (GitHub Actions)
-
-- Linting
-- Type checking
-- Build validation
-
----
-
-## 📁 Project Structure (Simplified)
-
-```
-app/
-  (auth)/
-  blog/
-  dashboard/
-  api/
-components/
-lib/
-actions/
-schemas/
-```
-
----
 
 ## 🛠️ Getting Started
 
