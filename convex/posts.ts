@@ -218,6 +218,7 @@ export const searchPosts = query({
       .query("posts")
       .withSearchIndex("search_title", (q) => q.search("title", args.term))
       .take(limit);
+    console.log("titles", titleMatches);
     await pushDocs(titleMatches);
 
     if (results.length < limit) {
@@ -227,6 +228,7 @@ export const searchPosts = query({
           q.search("content", args.term),
         )
         .take(limit);
+      console.log("titles", bodyMatches);
       await pushDocs(bodyMatches);
     }
 

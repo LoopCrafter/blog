@@ -14,6 +14,7 @@ const SearchInput = () => {
     api.posts.searchPosts,
     term.length >= 2 ? { limit: 6, term } : "skip",
   );
+  console.log("results:", results);
 
   function handlechangeTerm(e: React.ChangeEvent<HTMLInputElement>) {
     setTerm(e.target.value);
