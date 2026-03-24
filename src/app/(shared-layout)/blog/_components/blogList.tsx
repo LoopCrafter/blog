@@ -7,18 +7,17 @@ import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 
 type BlogListProps = {
-  currentPage: number;
+  currentPage?: number;
+  pageSize?: number;
 };
 
-const PAGE_SIZE = 9;
-
-const BlogList = async ({ currentPage }: BlogListProps) => {
+const BlogList = async ({ currentPage = 1, pageSize = 60 }: BlogListProps) => {
   "use cache";
   cacheLife("hours");
   cacheTag("blog");
   const results = await fetchQuery(api.posts.getPosts, {
     page: currentPage,
-    pageSize: PAGE_SIZE,
+    pageSize: pageSize,
   });
 
   if (!results.items.length) return <EmptyBlog />;

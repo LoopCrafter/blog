@@ -17,8 +17,6 @@ type BlogPageProps = {
 };
 
 const BlogPage = async ({ searchParams }: BlogPageProps) => {
-  const params = await searchParams;
-  const currentPage = Math.max(1, Number(params.page ?? "1") || 1);
   return (
     <div className="py-12">
       <div className="text-center mb-6">
@@ -30,7 +28,7 @@ const BlogPage = async ({ searchParams }: BlogPageProps) => {
         </p>
       </div>
       <Suspense fallback={<BlogSkeleton />}>
-        <BlogList currentPage={currentPage} />
+        <BlogList />
       </Suspense>
     </div>
   );
