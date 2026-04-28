@@ -197,19 +197,27 @@ export const searchPosts = query({
     limit: v.number(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
     const limit = args.limit;
     const results: SearchResults[] = [];
     const seen = new Set();
 
     const pushDocs = async (docs: Array<Doc<"posts">>) => {
       for (const doc of docs) {
+        if (!identity) {
+          if (doc.status !== "publish") continue;
+        }
+
         if (seen.has(doc._id)) continue;
         seen.add(doc._id);
+
         results.push({
           id: doc._id,
           title: doc.title,
           content: doc.content,
         });
+
         if (results.length >= limit) break;
       }
     };
@@ -217,8 +225,8 @@ export const searchPosts = query({
     const titleMatches = await ctx.db
       .query("posts")
       .withSearchIndex("search_title", (q) => q.search("title", args.term))
-      .take(limit);
-    console.log("titles", titleMatches);
+      .take(limit * 2);
+
     await pushDocs(titleMatches);
 
     if (results.length < limit) {
@@ -227,12 +235,12 @@ export const searchPosts = query({
         .withSearchIndex("search_content", (q) =>
           q.search("content", args.term),
         )
-        .take(limit);
-      console.log("titles", bodyMatches);
+        .take(limit * 2);
+
       await pushDocs(bodyMatches);
     }
 
-    return results;
+    return results.slice(0, limit);
   },
 });
 
